@@ -1,0 +1,45 @@
+{% set version = "0.11.0" %}
+{% set url = "https://github.com/seq-lang/seq/releases/download/v" %}
+{% set release = "seq-linux-x86_64.tar.gz" %}
+
+package:
+  name: seq-lang
+  version: "{{ version }}"
+
+source:
+  url: "{{ url }}{{ version }}/{{ release }}"
+  sha256: f7e96cc6b0d58bed0fee15c7fd85878dd9f4017c5eb5459e02cd461e9c61d3fc
+
+build:
+  number: 0
+  missing_dso_whitelist:
+    - '/lib/libomp.so'
+    - '/lib/libseq.so'
+    - '/lib/libseqrt.so'
+    - '/lib64/*'
+
+requirements:
+  run:
+    - sysroot_linux-64==2.17
+    - xz
+    - bzip2
+    - clang
+    - llvm-openmp
+    - zlib
+
+test:
+  files:
+    - test.seq
+  commands:
+    - pwd
+    - echo $OLD_LD_LIBPATH
+    - seqc --version
+    - seqc build -exe -o test test.seq
+    - ./test
+
+about:
+  home: https://github.com/seq-lang/
+  license: Apache-2.0
+  summary: 'A strongly-typed and statically-compiled high-performance Pythonic language!'
+  description: |
+    Seq is a programming language for computational genomics and bioinformatics. With a Python-compatible syntax and a host of domain-specific features and optimizations, Seq makes writing high-performance genomics software as easy as writing Python code, and achieves performance comparable to (and in many cases better than) C/C++.
